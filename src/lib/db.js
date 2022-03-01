@@ -4,10 +4,11 @@ import pg from 'pg';
 const SCHEMA_FILE = './sql/schema.sql';
 const DROP_SCHEMA_FILE = './sql/drop.sql';
 
-const { DATABASE_URL: connectionString, NODE_ENV: nodeEnv = 'development' } =
+const { DATABASE_URL: connectionString, NODE_ENV: nodeEnv } =
   process.env;
 
 if (!connectionString) {
+  console.log(connectionString);
   console.error('vantar DATABASE_URL í .env');
   process.exit(-1);
 }
