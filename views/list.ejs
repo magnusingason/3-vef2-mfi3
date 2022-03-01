@@ -1,0 +1,27 @@
+<section class="Events">
+    <h2 class="Events-title">All Events:</h2>
+  
+    <% if (events.length === 0) { %>
+      <p class="events__empty">No events.</p>
+    <% } else { %>
+      <table class="events__table" cellpadding="0" style="text-align: center; margin-top: 1rem;">
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+        <% events.forEach((row) => { %>
+          <tr>
+            <td class="name"><a href="/event/<%= row.id %>/"><%= row.name %></a></td>
+            <td class="description"><%= row.description %></td>
+            <% if (admin) { %>
+              <td>
+                <p class="edit" ><a href="/admin/update/<%= row.id %>">click to edit</a></p>
+              </td>
+            <% } %>
+          </tr>
+        <% }) %>
+        </tr>
+      </table>
+    <% } %>
+  </section>
+  

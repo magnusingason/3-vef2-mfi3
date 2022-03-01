@@ -1,0 +1,27 @@
+<%- include('header') -%>
+
+<h1>Innskráning</h1>
+
+<p>For logging in as admin, username: admin and password: 123</p>
+
+<form class="form" method="post" action="/admin/login" autocomplete="off">
+  <div class="field">
+    <label for="username">username</label>
+    <input type="text" name="username" id="username">
+  </div>
+
+
+  <div class="field">
+    <label for="password">password</label>
+    <input type="password" name="password" id="password">
+  </div>
+  <% if (message) { %>
+    <p><%= message %></p>
+  <% } %>
+
+  <button class="button">log in</button>
+</form>
+
+<a href="/">Til baka</a>
+
+<%- include('footer') -%>

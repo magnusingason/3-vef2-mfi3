@@ -1,0 +1,20 @@
+
+<%- include('header') -%>
+
+<h1><%= title %></h1>
+
+<div>
+<%- include('list') -%>
+</div>
+
+
+<div class="login">
+    <h2>Create new event as an admin!</h2>
+    <%- include('eventsform') -%>
+</div>
+
+<div class="logout">
+    <p class="logouttext" style="text-align: center; margin-top: 1rem;"><a href="/admin/logout">click to logout</a></p>
+</div>
+
+<%- include('footer') -%>

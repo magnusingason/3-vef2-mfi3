@@ -1,0 +1,1 @@
+-- Útfæra að "droppa" gögnum

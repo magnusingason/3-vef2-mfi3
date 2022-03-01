@@ -1,0 +1,59 @@
+{
+  "name": "vef2-2022-v2-mfi3",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "dotenv -e .env -- nodemon ./src/app.js",
+    "start": "dotenv -e .env node ./src/app.js",
+    "setup": "dotenv -e .env node ./src/setup.js",
+    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest ./*.test.js",
+    "test-watch": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest ./*.test.js",
+    "coverage": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest --coverage --collectCoverageFrom=\"./src/**/*.js\"",
+    "prettier": "prettier --write .",
+    "lint": "concurrently npm:lint:*",
+    "lint:eslint": "eslint ./src/**/*.js",
+    "lint:stylelint": "stylelint ./public/styles.css"
+  },
+  "keywords": [],
+  "author": "magnusingason <80974014+magnusingason@users.noreply.github.com>",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^14.3.2",
+    "dotenv-cli": "^4.1.1",
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.14.0",
+    "faker": "^6.6.6",
+    "heroku": "^7.59.2",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0",
+    "pg": "^8.7.3",
+    "session": "^0.1.0",
+    "xss": "^1.0.10"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "eslint": "^8.8.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "jest": "^27.4.7",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
+    "stylelint": "^14.3.0",
+    "stylelint-config-sass-guidelines": "^9.0.1",
+    "stylelint-config-standard": "^24.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magnusingason/vef2-verk2-mfi3.git"
+  },
+  "bugs": {
+    "url": "https://github.com/magnusingason/vef2-verk2-mfi3/issues"
+  },
+  "homepage": "https://github.com/magnusingason/vef2-verk2-mfi3#readme"
+}
