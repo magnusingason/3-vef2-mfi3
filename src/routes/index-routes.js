@@ -1,217 +1,107 @@
 import express from 'express';
+import { validationResult } from 'express-validator';
 import { catchErrors } from '../lib/catch-errors.js';
-import { insertEvent, list, total, signupList } from '../lib/db.js';
-import { body, validationResult } from 'express-validator';
-import xss from 'xss';
-import { insertSignup } from '../lib/db.js';
-
+import { listEvent, listEvents, listRegistered, register } from '../lib/db.js';
+import {
+  registrationValidationMiddleware,
+  sanitizationMiddleware,
+  xssSanitizationMiddleware,
+} from '../lib/validation.js';
 
 export const indexRouter = express.Router();
 
-export const PAGE_SIZE = 50;
-
 async function indexRoute(req, res) {
-
-  let {page = 1} = req.query;
-  page = setPagenumber(page); 
-
-  const errors = [];
-  const formData = {
-    name: '',
-    description: '',
-  };
-
-  const offset = (page - 1) * PAGE_SIZE;
-
-  const events = await list(offset, PAGE_SIZE);
-
-  const totalevents = await total();
-
-  const paging = await pagingInfo(
-    {
-      page, offset, totalevents, eventsLength: events.length,
-    },
-  );
+  const events = await listEvents();
 
   res.render('index', {
-    title: 'Events',
-    errors,
-    formData,
+    title: 'Viðburðasíðan',
+    admin: false,
     events,
-    paging,
-    admin: false,
   });
 }
 
-async function signupRoute(req, res) {
+async function eventRoute(req, res, next) {
+  const { slug } = req.params;
+  const event = await listEvent(slug);
 
-  let {page = 1} = req.query;
-  page = setPagenumber(page); 
+  if (!event) {
+    return next();
+  }
 
-  const errors = [];
-  const formData = {
-    name: '',
-    comment: '',
-  };
+  const registered = await listRegistered(event.id);
 
-  let eventid = req.params.id;
-
-  const offset = (page - 1) * PAGE_SIZE;
-
-  const signup = await signupList(offset,PAGE_SIZE);
-
-  const filterByeventsID = (data, eventsID) => data.filter(d => d.event == eventsID)
-  let signups = filterByeventsID(signup, eventid);
-
-  const paging = await pagingInfo(
-    {
-      page, offset,
-    },
-  );
-
-  res.render('event', {
-    title: 'Events',
-    errors,
-    formData,
-    eventid,
-    signups,
-    paging,
-    admin: false,
+  return res.render('event', {
+    title: `${event.name} — Viðburðasíðan`,
+    event,
+    registered,
+    errors: [],
+    data: {},
   });
 }
 
-async function register(req, res) {
-  const {
-    name, description,
-  } = req.body;
+async function eventRegisteredRoute(req, res) {
+  const events = await listEvents();
 
-  let success = true;
-
-  try {
-    success = await insertEvent({
-      name, description
-    });
-  } catch (e) {
-    console.error(e);
-  }
-
-  if (success) {
-    return res.redirect('/');
-  }
-
-  return res.render('error', { title: 'Gat ekki skráð!', text: 'Hafðir þú skrifað undir áður?' });
+  res.render('registered', {
+    title: 'Viðburðasíðan',
+    events,
+  });
 }
-
-async function signup(req, res) {
-  const {
-    name, comment,
-  } = req.body;
-
-  let success = true;
-  const eventsID = req.params.id;
-  const event = eventsID;
-
-  try {
-    success = await insertSignup({
-      name, comment, event
-    });
-  } catch (e) {
-    console.error(e);
-  }
-
-  if (success) {
-    return res.redirect('/event/'+eventsID);
-  }
-
-  return res.render('error', { title: 'Gat ekki skráð!', text: 'Hafðir þú skrifað undir áður?' });
-}
-
-const validationMiddleware = [
-  body('name')
-    .isLength({ min: 1 })
-    .withMessage('Nafn má ekki vera tómt'),
-  body('name')
-    .isLength({ max: 128 })
-    .withMessage('Nafn má að hámarki vera 128 stafir'),
-  body('comment')
-    .isLength({ max: 250 })
-    .withMessage('Athugasemd má að hámarki vera 250 stafir'),
-];
-
-const xssSanitizationMiddleware = [
-  body('name').customSanitizer((v) => xss(v)),
-  body('description').customSanitizer((v) => xss(v)),
-];
-
-const sanitizationMiddleware = [
-  body('name').trim().escape(),
-];
 
 async function validationCheck(req, res, next) {
-  const {
-    name, description
-  } = req.body;
+  const { name, comment } = req.body;
 
-  const formData = {
-    name, description,
+  // TODO tvítekning frá því að ofan
+  const { slug } = req.params;
+  const event = await listEvent(slug);
+  const registered = await listRegistered(event.id);
+
+  const data = {
+    name,
+    comment,
   };
 
   const validation = validationResult(req);
 
   if (!validation.isEmpty()) {
-    return res.render('index', { formData, errors: validation.errors, registrations });
+    return res.render('event', {
+      title: `${event.name} — Viðburðasíðan`,
+      data,
+      event,
+      registered,
+      errors: validation.errors,
+    });
   }
 
   return next();
 }
 
+async function registerRoute(req, res) {
+  const { name, comment } = req.body;
+  const { slug } = req.params;
+  const event = await listEvent(slug);
 
-indexRouter.get('/', catchErrors(indexRoute));
+  const registered = await register({
+    name,
+    comment,
+    event: event.id,
+  });
 
-indexRouter.get('/event/:id', catchErrors(signupRoute));
-
-// TODO útfæra öll routes
-
-indexRouter.post(
-  '/',
-  validationMiddleware,
-  xssSanitizationMiddleware,
-  catchErrors(validationCheck),
-  sanitizationMiddleware,
-  catchErrors(register),
-);
-
-indexRouter.post(
-  '/event/:id',
-  validationMiddleware,
-  xssSanitizationMiddleware,
-  catchErrors(validationCheck),
-  sanitizationMiddleware,
-  catchErrors(signup),
-)
-
-export async function pagingInfo({
-  page, offset, totalRegistrations, registrationsLength, baseUrl = '',
-} = {}) {
-  return {
-    page,
-    total: totalRegistrations,
-    totalPages: Math.ceil(totalRegistrations / PAGE_SIZE),
-    first: offset === 0,
-    last: registrationsLength < PAGE_SIZE,
-    hasPrev: offset > 0,
-    hasNext: registrationsLength === PAGE_SIZE,
-    prevUrl: `${baseUrl}/?page=${page - 1}`,
-    nextUrl: `${baseUrl}/?page=${page + 1}`,
-  };
-}
-
-export function setPagenumber(page) {
-  const num = Number(page);
-
-  if (Number.isNaN(num) || !Number.isInteger(num) || num < 1) {
-    return 1;
+  if (registered) {
+    return res.redirect(`/${event.slug}`);
   }
 
-  return num;
+  return res.render('error');
 }
+
+indexRouter.get('/', catchErrors(indexRoute));
+indexRouter.get('/:slug', catchErrors(eventRoute));
+indexRouter.post(
+  '/:slug',
+  registrationValidationMiddleware('comment'),
+  xssSanitizationMiddleware('comment'),
+  catchErrors(validationCheck),
+  sanitizationMiddleware('comment'),
+  catchErrors(registerRoute)
+);
+indexRouter.get('/:slug/thanks', catchErrors(eventRegisteredRoute));

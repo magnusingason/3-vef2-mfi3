@@ -1,25 +1,27 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { dirname, join } from 'path';
 import session from 'express-session';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { insertEvent } from './lib/db.js';
-//import { isInvalid } from './lib/template-helpers.js';
+import passport from './lib/login.js';
+import { isInvalid } from './lib/template-helpers.js';
+import { adminRouter } from './routes/admin-routes.js';
 import { indexRouter } from './routes/index-routes.js';
-import { adminRouter} from './routes/admin.js';
-import  passport  from './routes/login.js';
 
 dotenv.config();
 
-const { PORT: port = 3003,  SESSION_SECRET: sessionSecret = 'awojkdpoaw',  DATABASE_URL: connectionString,} = process.env;
+const {
+  PORT: port = 3000,
+  SESSION_SECRET: sessionSecret,
+  DATABASE_URL: connectionString,
+} = process.env;
 
-const app = express();
-/*
 if (!connectionString || !sessionSecret) {
   console.error('Vantar gögn í env');
   process.exit(1);
 }
-*/
+
+const app = express();
 
 // Sér um að req.body innihaldi gögn úr formi
 app.use(express.urlencoded({ extended: true }));
@@ -30,48 +32,24 @@ app.use(express.static(join(path, '../public')));
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
 
-
-function isInvalid(field, errors = []) {
-  // Boolean skilar `true` ef gildi er truthy (eitthvað fannst)
-  // eða `false` ef gildi er falsy (ekkert fannst: null)
-  return Boolean(errors.find((i) => i && i.param === field));
-}
-
-app.use(session({
-  secret: sessionSecret,
-  resave: false,
-  saveUninitialized: false,
-  maxAge: 20 * 1000, // 20 sek
-}));
-
-
-app.locals.isInvalid = isInvalid;
+app.use(
+  session({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    maxAge: 20 * 1000, // 20 sek
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.locals.formatDate = (str) => {
-  let date = '';
-
-  try {
-    date = format(str || '', 'dd.MM.yyyy');
-  } catch {
-    return '';
-  }
-
-  return date;
-};
-
-/*
 app.locals = {
-  // TODO hjálparföll fyrir template
+  isInvalid,
 };
-*/
-  
-app.use('/', indexRouter);
-// TODO admin routes
 
 app.use('/admin', adminRouter);
+app.use('/', indexRouter);
 
 /** Middleware sem sér um 404 villur. */
 app.use((req, res) => {
@@ -90,4 +68,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
 });
-

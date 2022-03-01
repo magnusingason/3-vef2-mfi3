@@ -1,27 +1,60 @@
-<section class="Events">
-    <h2 class="Events-title">All Events:</h2>
-  
-    <% if (events.length === 0) { %>
-      <p class="events__empty">No events.</p>
-    <% } else { %>
-      <table class="events__table" cellpadding="0" style="text-align: center; margin-top: 1rem;">
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-        </tr>
-        <% events.forEach((row) => { %>
-          <tr>
-            <td class="name"><a href="/event/<%= row.id %>/"><%= row.name %></a></td>
-            <td class="description"><%= row.description %></td>
-            <% if (admin) { %>
-              <td>
-                <p class="edit" ><a href="/admin/update/<%= row.id %>">click to edit</a></p>
-              </td>
-            <% } %>
-          </tr>
-        <% }) %>
-        </tr>
-      </table>
-    <% } %>
-  </section>
-  
+<section class="registrations">
+  <h2 class="registrations__title">Undirskriftir</h2>
+  <p class="registrations__total">Fjöldi undirskrifta: <%= paging.total %></p>
+
+  <% if (false) { %>
+  <form class="form" method="get" action="/admin">
+    <div class="field">
+      <label for="search">Leit:</label>
+      <input type="text" name="search" id="search" value="<%= search %>">
+    </div>
+    <button class="button">Leita</button>
+  </form>
+  <% } %>
+
+  <% if (registrations.length === 0) { %>
+  <p class="registrations__empty">Engar undirskriftir.</p>
+  <% } else { %>
+  <table class="registrations__table" cellpadding="0">
+    <tr>
+      <th>Dags</th>
+      <th>Nafn</th>
+      <th>Athugasemd</th>
+      <% if (admin) { %>
+      <th>Eyða</th>
+      <% } %>
+    </tr>
+    <% registrations.forEach((row) => { %>
+    <tr>
+      <td class="date"><%= formatDate(row.signed) %></td>
+      <td class="name"><%= row.anonymous ? 'Nafnlaust' : row.name %></td>
+      <td class="comment"><%= row.comment %></td>
+      <% if (admin) { %>
+      <td>
+        <form class="delete-form" method="post" action="/admin/delete/<%= row.id %>">
+          <button class="button">Eyða</button>
+        </form>
+      </td>
+      <% } %>
+    </tr>
+    <% }) %>
+    </tr>
+  </table>
+  <% } %>
+</section>
+
+<div class="paging">
+  <% if (paging.hasPrev) { %>
+    <a class="paging__prev" href="<%= paging.prevUrl %>">Fyrri síða</a>
+  <% } else { %>
+  <span class="paging__prev">Fyrri síða</span>
+  <% } %>
+
+  <div class="paging__info">Síða <%= paging.page %> af <%= paging.totalPages %></div>
+
+  <% if (paging.hasNext) { %>
+  <a class="paging__next" href="<%= paging.nextUrl %>">Næsta síða</a>
+  <% } else { %>
+  <span class="paging__next">Næsta síða</span>
+  <% } %>
+</div>

@@ -4,7 +4,7 @@ import pg from 'pg';
 const SCHEMA_FILE = './sql/schema.sql';
 const DROP_SCHEMA_FILE = './sql/drop.sql';
 
-const { DATABASE_URL: connectionString, NODE_ENV: nodeEnv } =
+const { DATABASE_URL: connectionString, NODE_ENV: nodeEnv = 'development' } =
   process.env;
 
 if (!connectionString) {
@@ -57,179 +57,138 @@ export async function dropSchema(dropFile = DROP_SCHEMA_FILE) {
   return query(data.toString('utf-8'));
 }
 
-export async function insertEvent({
-  name, description
-} = {}){
-  let success = true;
-
-  let slug = name;
-
+export async function createEvent({ name, slug, description } = {}) {
   const q = `
-  INSERT INTO events
-    (name, slug, description)
-  VALUES
-    ($1, $2, $3);
-`;
-const values = [name, slug, description];
+    INSERT INTO events
+      (name, slug, description)
+    VALUES
+      ($1, $2, $3)
+    RETURNING id, name, slug, description;
+  `;
+  const values = [name, slug, description];
+  const result = await query(q, values);
 
-try {
-  await query(q, values);
-} catch (e) {
-  console.error('Error inserting event', e);
-  success = false;
+  if (result && result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
 }
 
-return success;
-}
-
-export async function insertSignup({
-  name, comment, event
-} = {}){
-  let success = true;
-
+// Updatear ekki description, erum ekki að útfæra partial update
+export async function updateEvent(id, { name, slug, description } = {}) {
   const q = `
-  INSERT INTO signup
-    (name, comment, event)
-  VALUES
-    ($1, $2, $3);
-`;
-const values = [name, comment, event];
+    UPDATE events
+      SET
+        name = $1,
+        slug = $2,
+        description = $3,
+        updated = CURRENT_TIMESTAMP
+    WHERE
+      id = $4
+    RETURNING id, name, slug, description;
+  `;
+  const values = [name, slug, description, id];
+  const result = await query(q, values);
 
-try {
-  await query(q, values);
-} catch (e) {
-  console.error('Error inserting event', e);
-  success = false;
+  if (result && result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
 }
 
-return success;
+export async function register({ name, comment, event } = {}) {
+  const q = `
+    INSERT INTO registrations
+      (name, comment, event)
+    VALUES
+      ($1, $2, $3)
+    RETURNING
+      id, name, comment, event;
+  `;
+  const values = [name, comment, event];
+  const result = await query(q, values);
+
+  if (result && result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
 }
 
+export async function listEvents() {
+  const q = `
+    SELECT
+      id, name, slug, description, created, updated
+    FROM
+      events
+  `;
 
+  const result = await query(q);
+
+  if (result) {
+    return result.rows;
+  }
+
+  return null;
+}
+
+export async function listEvent(slug) {
+  const q = `
+    SELECT
+      id, name, slug, description, created, updated
+    FROM
+      events
+    WHERE slug = $1
+  `;
+
+  const result = await query(q, [slug]);
+
+  if (result && result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
+}
+
+// TODO gætum fellt þetta fall saman við það að ofan
+export async function listEventByName(name) {
+  const q = `
+    SELECT
+      id, name, slug, description, created, updated
+    FROM
+      events
+    WHERE name = $1
+  `;
+
+  const result = await query(q, [name]);
+
+  if (result && result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
+}
+
+export async function listRegistered(event) {
+  const q = `
+    SELECT
+      id, name, comment
+    FROM
+      registrations
+    WHERE event = $1
+  `;
+
+  const result = await query(q, [event]);
+
+  if (result) {
+    return result.rows;
+  }
+
+  return null;
+}
 
 export async function end() {
   await pool.end();
 }
-
-export async function total(search) {
-  let searchPart = '';
-  if (search) {
-    searchPart = `
-      WHERE
-      to_tsvector('english', name) @@ plainto_tsquery('english', $3)
-      OR
-      to_tsvector('english', comment) @@ plainto_tsquery('english', $3)
-    `;
-  }
-
-  try {
-    const result = await query(
-      `SELECT COUNT(*) AS count FROM events ${searchPart}`,
-      search ? [search] : [],
-    );
-    return (result.rows && result.rows[0] && result.rows[0].count) || 0;
-  } catch (e) {
-    console.error('Error counting signatures', e);
-  }
-
-  return 0;
-}
-
-
-export async function list(offset = 0, limit = 10, search = '') {
-  const values = [offset, limit];
-
-  let searchPart = '';
-  if (search) {
-    searchPart = `
-      WHERE
-      to_tsvector('english', name) @@ plainto_tsquery('english', $3)
-      OR
-      to_tsvector('english', comment) @@ plainto_tsquery('english', $3)
-    `;
-    values.push(search);
-  }
-
-  let result = [];
-
-  try {
-    const q = `
-      SELECT
-        id, name, slug, description, created
-      FROM
-        events
-      ${searchPart}
-      OFFSET $1 LIMIT $2
-    `;
-
-    const queryResult = await query(q, values);
-
-    if (queryResult && queryResult.rows) {
-      result = queryResult.rows;
-    }
-  } catch (e) {
-    console.error('Error selecting events', e);
-  }
-
-  return result;
-}
-
-export async function signupList(offset = 0, limit = 10, search = '') {
-  const values = [offset, limit];
-
-  let searchPart = '';
-  if (search) {
-    searchPart = `
-      WHERE
-      (to_tsvector('english', name) @@ plainto_tsquery('english', $3)
-      OR
-      to_tsvector('english', comment) @@ plainto_tsquery('english', $3)))
-    `;
-    values.push(search);
-  }
-
-  let result = [];
-
-  try {
-    const q = `
-      SELECT
-        id, name, comment, created, event
-      FROM
-        signup
-      ${searchPart}
-      OFFSET $1 LIMIT $2
-    `;
-
-    const queryResult = await query(q, values);
-
-    if (queryResult && queryResult.rows) {
-      result = queryResult.rows;
-    }
-  } catch (e) {
-    console.error('Error selecting events', e);
-  }
-
-  return result;
-}
-
-export async function updateRow({
-  name, description, id
-} = {}) {
-  let result = [];
-  try {
-    const queryResult = await query(
-      'UPDATE events SET name = $1, description = $2 WHERE id = $3',
-      [name,description,id]
-    );
-
-    if (queryResult && queryResult.rows) {
-      result = queryResult.rows;
-    }
-  } catch (e) {
-    console.error('Error updating row', e);
-  }
-
-  return result;
-}
-
-/* TODO útfæra aðgeðir á móti gagnagrunni */

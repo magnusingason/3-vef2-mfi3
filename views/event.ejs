@@ -1,11 +1,56 @@
 <%- include('header') -%>
 
-<%- include('signupList') -%>
+<section class="event">
+  <div class="event__info">
+    <h1 class="event__title"><%= event.name %></h1>
+    <p class="event__description"><%= event.description %></p>
+  </div>
 
-<%- include('attendForm') -%>
+  <div class="event__registered">
+    <h2 class="event__subtitle">Skráningar á viðburð</h2>
+    <% if (registered.length === 0) { %>
+      <p class="event__empty">Engin hefur skráð sig á þennan viðburð</p>
+    <% } else { %>
+      <ul class="event__registeredList">
+        <% registered.forEach((entry) => { %>
+          <li class="event__registeredItem">
+            <span class="event__registeredName"><%= entry.name %></span>
+            <% if (entry.comment) { %>
+              <span class="event__registeredComment"><%= entry.comment %></span>
+            <% } %>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </div>
+  <div class="event__registration">
+    <h2 class="event__subtitle">Skráðu þig</h2>
+    <form method="post" action="/<%= event.slug %>" enctype="application/x-www-form-urlencoded" class="">
+      <div class="field field--input<%= locals.isInvalid('name', errors) ?  ' field--invalid' : '' %>">
+        <label for="name">Nafn*:</label>
+        <input type="text" name="name" id="name">
+      </div>
 
-<div class="backtoindex">
-    <p class="backtoindex" style="text-align: center; margin-top: 1rem;"><a href="/">back to home</a></p>
-</div>
+      <div class="field field--textarea<%= locals.isInvalid('comment', errors) ?  ' field--invalid' : '' %>">
+        <label for="comment">Athugasemd:</label>
+        <textarea name="comment" id="comment"><%= data.comment %></textarea>
+      </div>
+
+      <% if (errors.length > 0) { %>
+        <h3 class="errors__title">Villur við skráningu:</h3>
+        <ul class="errors">
+          <% errors.forEach((error) => { %>
+            <li class="error"><label for="<%= error.param %>"><%= error.msg %></label></li>
+          <% }); %>
+        </ul>
+      <% } %>
+
+      <button class="button">Skrá mig</button>
+    </form>
+  </div>
+  <div class="link">
+    <a class="link__link" href="/">Til baka</a>
+  </div>
+</section>
 
 <%- include('footer') -%>

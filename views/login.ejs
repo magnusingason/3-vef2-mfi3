@@ -2,24 +2,23 @@
 
 <h1>Innskráning</h1>
 
-<p>For logging in as admin, username: admin and password: 123</p>
-
 <form class="form" method="post" action="/admin/login" autocomplete="off">
   <div class="field">
-    <label for="username">username</label>
+    <label for="username">Notendanafn</label>
     <input type="text" name="username" id="username">
   </div>
 
 
   <div class="field">
-    <label for="password">password</label>
+    <label for="password">Lykilorð</label>
     <input type="password" name="password" id="password">
   </div>
+
   <% if (message) { %>
-    <p><%= message %></p>
+  <p><%= message %></p>
   <% } %>
 
-  <button class="button">log in</button>
+  <button class="button">Innskrá</button>
 </form>
 
 <a href="/">Til baka</a>

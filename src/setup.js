@@ -1,51 +1,34 @@
-import faker from 'faker';
-import { query, end } from './db.js';
-
-const schemaFile = '../sql/schema.sql';
-
-
-function createFakeUser(n){
-  const fake = [];
-
-  while(fake.length < n){
-    fake.push({
-      username: faker.name.findName(),
-      password: Math.random() < 0.5 ? '' : faker.lorem.sentence()
-    })
-  }
-
-  return fake;
-}
+import { readFile } from 'fs/promises';
+import { createSchema, dropSchema, end, query } from './lib/db.js';
 
 async function create() {
-  const data = await promises.readFile(schemaFile);
+  const drop = await dropSchema();
 
-  await query(data.toString('utf-8'));
+  if (drop) {
+    console.info('schema dropped');
+  } else {
+    console.info('schema not dropped, exiting');
+    process.exit(-1);
+  }
 
-  const fakes = createFakeData(500);
+  const result = await createSchema();
 
-  for (let i = 0; i < fakes.length; i += 1) {
-    const fake = fakes[i];
+  if (result) {
+    console.info('schema created');
+  } else {
+    console.info('schema not created');
+  }
 
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      await query(
-        `
-          INSERT INTO
-            users (username, password)
-          VALUES
-            ($1, $2)`,
-        [fake.username, fake.password],
-      );
-    } catch (e) {
-      console.error('Error inserting', e);
-      return;
-    }
+  const data = await readFile('./sql/insert.sql');
+  const insert = await query(data.toString('utf-8'));
+
+  if (insert) {
+    console.info('data inserted');
+  } else {
+    console.info('data not inserted');
   }
 
   await end();
-
-  console.info('Schema & fake data created');
 }
 
 create().catch((err) => {
