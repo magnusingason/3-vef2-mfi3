@@ -24,7 +24,7 @@ if (!connectionString || !sessionSecret) {
 const app = express();
 
 // Sér um að req.body innihaldi gögn úr formi
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const path = dirname(fileURLToPath(import.meta.url));
 

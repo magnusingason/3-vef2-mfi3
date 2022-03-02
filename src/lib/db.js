@@ -4,7 +4,7 @@ import pg from 'pg';
 const SCHEMA_FILE = './sql/schema.sql';
 const DROP_SCHEMA_FILE = './sql/drop.sql';
 
-const { DATABASE_URL: connectionString, NODE_ENV: nodeEnv } =
+const { DATABASE_URL: connectionString, NODE_ENV: nodeEnv = 'development', } =
   process.env;
 
 if (!connectionString) {
