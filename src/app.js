@@ -1,10 +1,12 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import session from 'express-session';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import passport from './lib/login.js';
 import { isInvalid } from './lib/template-helpers.js';
+import { findById } from './lib/users.js';
 import { adminRouter } from './routes/admin-routes.js';
 import { indexRouter } from './routes/index-routes.js';
 
@@ -12,11 +14,12 @@ dotenv.config();
 
 const {
   PORT: port = 3005,
-  SESSION_SECRET: sessionSecret,
+  JWT_SECRET: jwtSecret,
+  TOKEN_LIFETIME: tokenLifetime = 200,
   DATABASE_URL: connectionString,
 } = process.env;
 
-if (!connectionString || !sessionSecret) {
+if (!connectionString || !jwtSecret) {
   console.error('Vantar gögn í env');
   process.exit(1);
 }
@@ -25,6 +28,11 @@ const app = express();
 
 // Sér um að req.body innihaldi gögn úr formi
 app.use(express.json());
+
+const jwtOptions = {
+  jwtFromRequests: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: jwtSecret,
+}
 
 const path = dirname(fileURLToPath(import.meta.url));
 
@@ -41,12 +49,23 @@ app.use(
   })
 );
 
+passport.use(new Strategy(jwtOptions, strat));
+
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.locals = {
   isInvalid,
 };
+
+async function strat(data, next) {
+  const user = await findById(data.id);
+
+  if (user) {
+    next(null, user);
+  } else {
+    next(null, false);
+  }
+}
 
 app.use('/admin', adminRouter);
 app.use('/', indexRouter);
