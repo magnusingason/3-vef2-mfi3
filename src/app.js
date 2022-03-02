@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import session from 'express-session';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -40,14 +39,6 @@ app.use(express.static(join(path, '../public')));
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
 
-app.use(
-  session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    maxAge: 20 * 1000, // 20 sek
-  })
-);
 
 passport.use(new Strategy(jwtOptions, strat));
 
