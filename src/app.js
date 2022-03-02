@@ -39,19 +39,6 @@ app.use(express.static(join(path, '../public')));
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
 
-const posts = [{
-  username: 'kyle',
-  title: 'post 1'
-},
-{
-  username: 'tim',
-  title: 'post 2'
-}]
-
-app.get('/test', (req, res) => {
-  res.json(posts);
-})
-
 passport.use(new Strategy(jwtOptions, strat));
 
 app.use(passport.initialize());
