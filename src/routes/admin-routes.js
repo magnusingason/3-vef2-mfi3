@@ -207,7 +207,7 @@ adminRouter.post(
     const passwordIsCorrect = await comparePasswords(password, user.password);
 
     // Ef við komumst hingað var notandi skráður inn, senda á /admin
-    if (passwordIsCorrec) {
+    if (passwordIsCorrect) {
       const payload = { id: user.id };
       const tokenOptions = { expiresIn: tokenLifetime };
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
