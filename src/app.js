@@ -29,7 +29,7 @@ const app = express();
 app.use(express.json());
 
 const jwtOptions = {
-  jwtFromRequests: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: jwtSecret,
 }
 
