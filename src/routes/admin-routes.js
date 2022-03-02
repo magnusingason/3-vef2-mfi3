@@ -1,19 +1,21 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
+import jwt from 'jsonwebtoken';
 import { catchErrors } from '../lib/catch-errors.js';
 import {
   createEvent,
   listEvent,
   listEventByName,
   listEvents,
-  updateEvent,
+  updateEvent
 } from '../lib/db.js';
-import passport, { ensureLoggedIn } from '../lib/login.js';
+import { ensureLoggedIn } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
+import { comparePasswords } from '../lib/users.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
-  xssSanitizationMiddleware,
+  xssSanitizationMiddleware
 } from '../lib/validation.js';
 
 export const adminRouter = express.Router();
@@ -192,17 +194,28 @@ adminRouter.post(
 
 adminRouter.get('/login', login);
 adminRouter.post(
-  '/login',
+  '/login', async (req, res) => {
 
-  // Þetta notar strat að ofan til að skrá notanda inn
-  passport.authenticate('local', {
-    failureMessage: 'Notandanafn eða lykilorð vitlaust.',
-    failureRedirect: '/admin/login',
-  }),
+    const { username, password = '' } = req.body;
 
-  // Ef við komumst hingað var notandi skráður inn, senda á /admin
-  (req, res) => {
-    res.redirect('/admin');
+    const user = await findByUsername(username);
+
+    if (!user) {
+      return res.status(401).json({ error: 'No such user' });
+    }
+
+    const passwordIsCorrect = await comparePasswords(password, user.password);
+
+    // Ef við komumst hingað var notandi skráður inn, senda á /admin
+    if (passwordIsCorrec) {
+      const payload = { id: user.id };
+      const tokenOptions = { expiresIn: tokenLifetime };
+      const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
+      return res.json({ token });
+    }
+
+    return res.status(401).json({ errorL: 'invalid password' });
+
   }
 );
 

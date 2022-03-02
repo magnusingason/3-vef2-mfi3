@@ -12,7 +12,7 @@ import { indexRouter } from './routes/index-routes.js';
 
 dotenv.config();
 
-const {
+export const {
   PORT: port = 3005,
   JWT_SECRET: jwtSecret,
   TOKEN_LIFETIME: tokenLifetime = 200,
