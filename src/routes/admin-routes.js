@@ -10,6 +10,7 @@ import {
 } from '../lib/db.js';
 import { requireAuthentication } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
+import { findByUsername } from '../lib/users.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
@@ -189,15 +190,14 @@ adminRouter.post(
     const username = req.body.username;
     const password = req.body.password;
 
-    passport.authenticate('local', {
-      failureMessage: 'Notandanafn eða lykilorð vitlaust.',
-      failureRedirect: '/admin/login',
-    }),
+    const user = await findByUsername(username);
 
-      // Ef við komumst hingað var notandi skráður inn, senda á /admin
-      (req, res) => {
-        res.redirect('/admin');
-      }
+    if (user) {
+      console.log("great success");
+    } else {
+      console.log("no hoes?");
+    }
+
   });
 
 adminRouter.get('/logout', (req, res) => {
