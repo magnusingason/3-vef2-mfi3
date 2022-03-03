@@ -194,6 +194,7 @@ adminRouter.post(
 
     console.log(user)
 
+    res.redirect('/');
   });
 
 adminRouter.get('/logout', (req, res) => {
