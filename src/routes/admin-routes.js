@@ -187,26 +187,12 @@ adminRouter.get('/login', login);
 adminRouter.post(
   '/login', async (req, res) => {
 
-    const string = "'";
     const username = req.body.username;
-    const actualusername = string + username + string;
     const password = req.body.password;
-    const actualpassword = string + password + string;
-    console.log(actualusername);
 
-    const user = await findByUsername(actualusername);
-    const user1 = await findByUsername(username);
+    const user = await findByUsername(username);
 
-    if (user) {
-      console.log("great success");
-    } else {
-      console.log("no hoes?");
-    }
-    if (user1) {
-      console.log("great success1");
-    } else {
-      console.log("no hoes?11");
-    }
+    console.log(user)
 
   });
 
