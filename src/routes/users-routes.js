@@ -204,6 +204,7 @@ usersRouter.post(
       const tokenOptions = { expiresIn: tokenLifetime };
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
       console.log(token);
+      res.json({ token });
       return res.redirect("/users");
     }
     return res.status(401).json({ error: 'Invalid password' });
