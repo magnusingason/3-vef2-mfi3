@@ -184,7 +184,7 @@ async function eventRoute(req, res, next) {
 adminRouter.get('/', requireAuthentication, catchErrors(index));
 adminRouter.post(
   '/',
-  ensureLoggedIn,
+  requireAuthentication,
   registrationValidationMiddleware('description'),
   xssSanitizationMiddleware('description'),
   catchErrors(validationCheck),
