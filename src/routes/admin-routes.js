@@ -198,7 +198,7 @@ adminRouter.post(
       (req, res) => {
         res.redirect('/admin');
       }
-  );
+  });
 
 adminRouter.get('/logout', (req, res) => {
   // logout hendir session cookie og session
