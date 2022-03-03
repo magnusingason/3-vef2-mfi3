@@ -49,6 +49,10 @@ async function strat(data, next) {
   }
 }
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 passport.use(new Strategy(jwtOptions, strat));
 
 app.use(passport.initialize());
