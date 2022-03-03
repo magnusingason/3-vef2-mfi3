@@ -9,7 +9,7 @@ import {
   listEvents,
   updateEvent
 } from '../lib/db.js';
-import { ensureLoggedIn, requireAuthentication } from '../lib/login.js';
+import { requireAuthentication } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
 import { comparePasswords } from '../lib/users.js';
 import {
@@ -226,10 +226,10 @@ adminRouter.get('/logout', (req, res) => {
 });
 
 // Verður að vera seinast svo það taki ekki yfir önnur route
-adminRouter.get('/:slug', ensureLoggedIn, catchErrors(eventRoute));
+adminRouter.get('/:slug', requireAuthentication, catchErrors(eventRoute));
 adminRouter.post(
   '/:slug',
-  ensureLoggedIn,
+  requireAuthentication,
   registrationValidationMiddleware('description'),
   xssSanitizationMiddleware('description'),
   catchErrors(validationCheckUpdate),
