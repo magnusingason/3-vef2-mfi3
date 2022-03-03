@@ -204,7 +204,7 @@ adminRouter.post(
       const tokenOptions = { expiresIn: tokenLifetime };
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
       console.log(token);
-      return res.redirect("/");
+      return res.redirect("/admin");
     }
     return res.status(401).json({ error: 'Invalid password' });
   });
