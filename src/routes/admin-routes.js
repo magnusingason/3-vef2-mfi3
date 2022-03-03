@@ -11,7 +11,7 @@ import {
 } from '../lib/db.js';
 import { requireAuthentication } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
-import { comparePasswords } from '../lib/users.js';
+import { comparePasswords, findByUsername } from '../lib/users.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
