@@ -29,7 +29,7 @@ const app = express();
 // Sér um að req.body innihaldi gögn úr formi
 app.use(express.json());
 
-const jwtOptions = {
+export const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: jwtSecret,
 }
