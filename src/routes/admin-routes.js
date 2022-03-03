@@ -206,7 +206,7 @@ adminRouter.post(
       console.log(token);
       return res.redirect("/");
     }
-
+    return res.status(401).json({ error: 'Invalid password' });
   });
 
 adminRouter.get('/logout', (req, res) => {

@@ -61,7 +61,6 @@ export function ensureLoggedIn(req, res, next) {
 }
 
 export function requireAuthentication(req, res, next) {
-  console.log("i get here");
   return passport.authenticate(
     'jwt',
     { session: false },
@@ -77,10 +76,11 @@ export function requireAuthentication(req, res, next) {
         return res.status(401).json({ error });
       }
 
+      // Látum notanda vera aðgengilegan í rest af middlewares
       req.user = user;
       return next();
-    }
-  )
+    },
+  )(req, res, next);
 }
 
 export default passport;
