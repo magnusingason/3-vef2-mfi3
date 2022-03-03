@@ -187,10 +187,13 @@ adminRouter.get('/login', login);
 adminRouter.post(
   '/login', async (req, res) => {
 
+    const string = "'";
     const username = req.body.username;
+    const actualusername = string + username + string;
     const password = req.body.password;
+    const actualpassword = string + password + string;
 
-    const user = await findByUsername(username);
+    const user = await findByUsername(actualusername);
 
     if (user) {
       console.log("great success");
