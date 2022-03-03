@@ -195,11 +195,17 @@ adminRouter.post(
     console.log(actualusername);
 
     const user = await findByUsername(actualusername);
+    const user1 = await findByUsername(username);
 
     if (user) {
       console.log("great success");
     } else {
       console.log("no hoes?");
+    }
+    if (user1) {
+      console.log("great success1");
+    } else {
+      console.log("no hoes?1");
     }
 
   });
