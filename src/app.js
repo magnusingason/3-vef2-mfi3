@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import require from 'fs';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
