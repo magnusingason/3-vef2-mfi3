@@ -9,7 +9,7 @@ import {
   listEvents,
   updateEvent
 } from '../lib/db.js';
-import { ensureLoggedIn } from '../lib/login.js';
+import { ensureLoggedIn, requireAuthentication } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
 import { comparePasswords } from '../lib/users.js';
 import {
@@ -181,7 +181,7 @@ async function eventRoute(req, res, next) {
   });
 }
 
-adminRouter.get('/', ensureLoggedIn, catchErrors(index));
+adminRouter.get('/', requireAuthentication, catchErrors(index));
 adminRouter.post(
   '/',
   ensureLoggedIn,
