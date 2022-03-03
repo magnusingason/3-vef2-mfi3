@@ -68,7 +68,7 @@ export function requireAuthentication(req, res, next) {
       if (err) {
         return next(err);
       }
-
+      console.log(user);
       if (!user) {
         const error = info.name === 'TokenExpiredError'
           ? 'expired token' : 'invalid token';
