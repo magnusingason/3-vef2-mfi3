@@ -1,6 +1,5 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
-import jwt from 'jsonwebtoken';
 import { catchErrors } from '../lib/catch-errors.js';
 import {
   createEvent,
@@ -11,7 +10,6 @@ import {
 } from '../lib/db.js';
 import { requireAuthentication } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
-import { comparePasswords, findByUsername } from '../lib/users.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
@@ -191,28 +189,16 @@ adminRouter.post(
     const username = req.body.username;
     const password = req.body.password;
 
-    console.log(username);
+    passport.authenticate('local', {
+      failureMessage: 'Notandanafn eða lykilorð vitlaust.',
+      failureRedirect: '/admin/login',
+    }),
 
-    const user = await findByUsername(username);
-
-    if (!user) {
-      return res.status(401).json({ error: 'No such user' });
-    }
-
-    const passwordIsCorrect = await comparePasswords(password, user.password);
-
-    // Ef við komumst hingað var notandi skráður inn, senda á /admin
-    if (passwordIsCorrect) {
-      const payload = { id: user.id };
-      const tokenOptions = { expiresIn: tokenLifetime };
-      const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
-      return res.redirect('/admin');
-    }
-
-    return res.status(401).json({ errorL: 'invalid password' });
-
-  }
-);
+      // Ef við komumst hingað var notandi skráður inn, senda á /admin
+      (req, res) => {
+        res.redirect('/admin');
+      }
+  );
 
 adminRouter.get('/logout', (req, res) => {
   // logout hendir session cookie og session
