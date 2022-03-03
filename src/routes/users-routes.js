@@ -174,6 +174,8 @@ async function eventRoute(req, res, next) {
   });
 }
 
+
+
 usersRouter.get('/', requireAuthentication, catchErrors(index));
 usersRouter.post(
   '/',
@@ -205,7 +207,6 @@ usersRouter.post(
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
       console.log(token);
       res.json({ token });
-      return res.redirect("/users");
     }
     return res.status(401).json({ error: 'Invalid password' });
   });
