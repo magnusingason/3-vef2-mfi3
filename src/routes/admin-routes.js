@@ -35,9 +35,7 @@ async function index(req, res) {
 }
 
 function login(req, res) {
-  if (req.isAuthenticated()) {
-    return res.redirect('/admin');
-  }
+
 
   let message = '';
 
