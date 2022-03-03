@@ -39,14 +39,6 @@ app.use(express.static(join(path, '../public')));
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
 
-passport.use(new Strategy(jwtOptions, strat));
-
-app.use(passport.initialize());
-
-app.locals = {
-  isInvalid,
-};
-
 async function strat(data, next) {
   const user = await findById(data.id);
 
@@ -56,6 +48,16 @@ async function strat(data, next) {
     next(null, false);
   }
 }
+
+passport.use(new Strategy(jwtOptions, strat));
+
+app.use(passport.initialize());
+
+app.locals = {
+  isInvalid,
+};
+
+
 
 app.use('/admin', adminRouter);
 app.use('/', indexRouter);
