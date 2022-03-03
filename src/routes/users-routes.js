@@ -1,7 +1,7 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
-import { jwtOptions, tokenLifetime } from '../app.js';
+import { jwtOptions, requireAuthentication, tokenLifetime } from '../app.js';
 import { catchErrors } from '../lib/catch-errors.js';
 import {
   createEvent,
@@ -10,7 +10,6 @@ import {
   listEvents,
   updateEvent
 } from '../lib/db.js';
-import { requireAuthentication } from '../lib/login.js';
 import { slugify } from '../lib/slugify.js';
 import { comparePasswords, findByUsername } from '../lib/users.js';
 import {

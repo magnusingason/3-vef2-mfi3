@@ -60,28 +60,5 @@ export function ensureLoggedIn(req, res, next) {
   return res.redirect('/admin/login');
 }
 
-export function requireAuthentication(req, res, next) {
-  return passport.authenticate(
-    'jwt',
-    { session: false },
-    (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-      console.log(user);
-      if (!user) {
-        const error = info.name === 'TokenExpiredError'
-          ? 'expired token' : 'invalid token';
-
-        return res.status(401).json({ error });
-      } else {
-
-        // Látum notanda vera aðgengilegan í rest af middlewares
-        req.user = user;
-        return next();
-      }
-    },
-  )(req, res, next);
-}
 
 export default passport;
