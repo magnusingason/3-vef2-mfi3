@@ -61,6 +61,7 @@ export function ensureLoggedIn(req, res, next) {
 }
 
 export function requireAuthentication(req, res, next) {
+  console.log("i get here");
   return passport.authenticate(
     'jwt',
     { session: false },
