@@ -3,7 +3,7 @@
   <p class="registrations__total">Fjöldi undirskrifta: <%= paging.total %></p>
 
   <% if (false) { %>
-  <form class="form" method="get" action="/admin">
+  <form class="form" method="get" action="/users">
     <div class="field">
       <label for="search">Leit:</label>
       <input type="text" name="search" id="search" value="<%= search %>">
@@ -20,7 +20,7 @@
       <th>Dags</th>
       <th>Nafn</th>
       <th>Athugasemd</th>
-      <% if (admin) { %>
+      <% if (users) { %>
       <th>Eyða</th>
       <% } %>
     </tr>
@@ -29,9 +29,9 @@
       <td class="date"><%= formatDate(row.signed) %></td>
       <td class="name"><%= row.anonymous ? 'Nafnlaust' : row.name %></td>
       <td class="comment"><%= row.comment %></td>
-      <% if (admin) { %>
+      <% if (users) { %>
       <td>
-        <form class="delete-form" method="post" action="/admin/delete/<%= row.id %>">
+        <form class="delete-form" method="post" action="/users/delete/<%= row.id %>">
           <button class="button">Eyða</button>
         </form>
       </td>

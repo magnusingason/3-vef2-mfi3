@@ -7,8 +7,8 @@ import { fileURLToPath } from 'url';
 import passport from './lib/login.js';
 import { isInvalid } from './lib/template-helpers.js';
 import { findById } from './lib/users.js';
-import { adminRouter } from './routes/admin-routes.js';
 import { indexRouter } from './routes/index-routes.js';
+import { usersRouter } from './routes/users-routes.js';
 
 dotenv.config();
 
@@ -63,7 +63,7 @@ app.locals = {
 
 
 
-app.use('/admin', adminRouter);
+app.use('/users', usersRouter);
 app.use('/', indexRouter);
 
 /** Middleware sem sér um 404 villur. */

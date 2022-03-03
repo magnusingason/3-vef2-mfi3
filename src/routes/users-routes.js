@@ -19,7 +19,7 @@ import {
   xssSanitizationMiddleware
 } from '../lib/validation.js';
 
-export const adminRouter = express.Router();
+export const usersRouter = express.Router();
 
 async function index(req, res) {
   const events = await listEvents();
@@ -31,7 +31,7 @@ async function index(req, res) {
     errors: [],
     data: {},
     title: 'Viðburðir — umsjón',
-    admin: true,
+    users: true,
   });
 }
 
@@ -75,7 +75,7 @@ async function validationCheck(req, res, next) {
       title: 'Viðburðir — umsjón',
       data,
       errors: validation.errors.concat(customValidations),
-      admin: true,
+      users: true,
     });
   }
 
@@ -114,7 +114,7 @@ async function validationCheckUpdate(req, res, next) {
       title: 'Viðburðir — umsjón',
       data,
       errors: validation.errors.concat(customValidations),
-      admin: true,
+      users: true,
     });
   }
 
@@ -128,7 +128,7 @@ async function registerRoute(req, res) {
   const created = await createEvent({ name, slug, description });
 
   if (created) {
-    return res.redirect('/admin');
+    return res.redirect('/users');
   }
 
   return res.render('error');
@@ -149,7 +149,7 @@ async function updateRoute(req, res) {
   });
 
   if (updated) {
-    return res.redirect('/admin');
+    return res.redirect('/users');
   }
 
   return res.render('error');
@@ -174,8 +174,8 @@ async function eventRoute(req, res, next) {
   });
 }
 
-adminRouter.get('/', requireAuthentication, catchErrors(index));
-adminRouter.post(
+usersRouter.get('/', requireAuthentication, catchErrors(index));
+usersRouter.post(
   '/',
   requireAuthentication,
   registrationValidationMiddleware('description'),
@@ -185,8 +185,8 @@ adminRouter.post(
   catchErrors(registerRoute)
 );
 
-adminRouter.get('/login', login);
-adminRouter.post(
+usersRouter.get('/login', login);
+usersRouter.post(
   '/login', async (req, res) => {
 
     const username = req.body.username;
@@ -204,20 +204,20 @@ adminRouter.post(
       const tokenOptions = { expiresIn: tokenLifetime };
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
       console.log(token);
-      return res.redirect("/admin");
+      return res.redirect("/users");
     }
     return res.status(401).json({ error: 'Invalid password' });
   });
 
-adminRouter.get('/logout', (req, res) => {
+usersRouter.get('/logout', (req, res) => {
   // logout hendir session cookie og session
   req.logout();
   res.redirect('/');
 });
 
 // Verður að vera seinast svo það taki ekki yfir önnur route
-adminRouter.get('/:slug', requireAuthentication, catchErrors(eventRoute));
-adminRouter.post(
+usersRouter.get('/:slug', requireAuthentication, catchErrors(eventRoute));
+usersRouter.post(
   '/:slug',
   requireAuthentication,
   registrationValidationMiddleware('description'),

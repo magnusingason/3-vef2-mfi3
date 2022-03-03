@@ -5,7 +5,7 @@ import { listEvent, listEvents, listRegistered, register } from '../lib/db.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
-  xssSanitizationMiddleware,
+  xssSanitizationMiddleware
 } from '../lib/validation.js';
 
 export const indexRouter = express.Router();
@@ -15,7 +15,7 @@ async function indexRoute(req, res) {
 
   res.render('index', {
     title: 'Viðburðasíðan',
-    admin: false,
+    users: false,
     events,
   });
 }
