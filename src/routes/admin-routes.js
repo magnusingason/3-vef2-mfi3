@@ -190,6 +190,8 @@ adminRouter.post(
 
     const { username, password = '' } = req.body;
 
+    console.log(username);
+
     const user = await findByUsername(username);
 
     if (!user) {
