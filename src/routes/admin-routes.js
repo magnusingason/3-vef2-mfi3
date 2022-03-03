@@ -192,6 +192,7 @@ adminRouter.post(
     const actualusername = string + username + string;
     const password = req.body.password;
     const actualpassword = string + password + string;
+    console.log(actualusername);
 
     const user = await findByUsername(actualusername);
 
