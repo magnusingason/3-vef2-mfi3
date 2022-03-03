@@ -74,11 +74,12 @@ export function requireAuthentication(req, res, next) {
           ? 'expired token' : 'invalid token';
 
         return res.status(401).json({ error });
-      }
+      } else {
 
-      // Látum notanda vera aðgengilegan í rest af middlewares
-      req.user = user;
-      return next();
+        // Látum notanda vera aðgengilegan í rest af middlewares
+        req.user = user;
+        return next();
+      }
     },
   )(req, res, next);
 }
