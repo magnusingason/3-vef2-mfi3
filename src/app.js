@@ -1,6 +1,6 @@
+import { bodyParser } from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
-import require from 'fs';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -50,7 +50,6 @@ async function strat(data, next) {
   }
 }
 
-var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
