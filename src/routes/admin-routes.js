@@ -1,7 +1,7 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
-import { tokenLifetime } from '../app.js';
+import { jwtOptions, tokenLifetime } from '../app.js';
 import { catchErrors } from '../lib/catch-errors.js';
 import {
   createEvent,
