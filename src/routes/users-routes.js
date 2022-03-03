@@ -192,12 +192,12 @@ usersRouter.get('/login', login);
 usersRouter.post(
   '/login', async (req, res) => {
 
-    const username = req.body.username;
-    const password = req.body.password;
+    const { username, password = '' } = req.body;
 
     const user = await findByUsername(username);
+
     if (!user) {
-      return res.status(401).json({ error: 'no such user' });
+      return res.status(401).json({ error: 'No such user' });
     }
 
     const passwordIsCorrect = await comparePasswords(password, user.password);
@@ -206,9 +206,9 @@ usersRouter.post(
       const payload = { id: user.id };
       const tokenOptions = { expiresIn: tokenLifetime };
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
-      console.log(token);
-      return res.redirect("/users");
+      return res.json({ token });
     }
+
     return res.status(401).json({ error: 'Invalid password' });
   });
 
