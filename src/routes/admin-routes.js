@@ -188,7 +188,8 @@ adminRouter.get('/login', login);
 adminRouter.post(
   '/login', async (req, res) => {
 
-    const { username, password = '' } = req.body;
+    const username = req.body.username;
+    const password = req.body.password;
 
     console.log(username);
 
