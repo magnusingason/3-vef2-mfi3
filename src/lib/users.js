@@ -12,7 +12,7 @@ export async function comparePasswords(password, hash) {
 }
 
 export async function findByUsername(username) {
-  const q = 'SELECT * FROM users WHERE username = $1;';
+  const q = 'SELECT * FROM users';
 
   try {
     const result = await query(q, [username]);
