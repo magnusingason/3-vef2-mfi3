@@ -119,6 +119,7 @@ export async function register({ name, comment, event } = {}) {
 }
 
 export async function listEvents() {
+  console.log("it got here");
   const q = `
     SELECT
       id, name, description,
