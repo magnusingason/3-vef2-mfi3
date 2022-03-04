@@ -129,6 +129,7 @@ export async function listEvents() {
   const result = await query(q);
 
   if (result) {
+    console.log(results.rows);
     return result.rows;
   }
 
