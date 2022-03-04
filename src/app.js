@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import express from 'express';
 import jwt from 'jsonwebtoken';
@@ -53,8 +52,6 @@ async function strat(data, next) {
   }
 }
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 
 passport.use(new Strategy(jwtOptions, strat));
@@ -163,26 +160,16 @@ export function requireAuthentication(req, res, next) {
     },
   )(req, res, next);
 }
-/*
+
 app.post('/users/register', function (req, res, next) {
-  const saltHash = utils.genPassword(req.body.password);
+  const { username, name, password = '' } = req.body;
 
-  const salt = saltHash.salt;
-  const hash = saltHash.hash;
+  const result = await createUser(username, email, password);
+  delete result.password;
 
-  const newUser = new User({
-    username: req.body.username,
-    hash: hash,
-    salt: salt
-  });
-
-  newUser.save()
-    .then((user) => {
-      res.json({ sucess: true, user: user });
-    }).catch(err => next(err));
-
+  return res.status(201).json(result);
 });
-*/
+
 
 app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
