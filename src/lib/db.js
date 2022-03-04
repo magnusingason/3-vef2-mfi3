@@ -129,7 +129,7 @@ export async function listEvents() {
   const result = await query(q);
 
   if (result) {
-    console.log(results.rows);
+    console.log(result.rows);
     return result.rows;
   }
 
