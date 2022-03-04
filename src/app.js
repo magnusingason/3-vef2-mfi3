@@ -82,12 +82,29 @@ app.post('/users/login', async (req, res) => {
     const payload = { id: user.id };
     const tokenOptions = { expiresIn: tokenLifetime };
     const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
-    return res.json({ token });
+    return res.json({ user, token, expiresIn: tokenOptions.expiresIn, });
   }
 
   return res.status(401).json({ error: 'Invalid password' });
 });
 
+export function addUserIfAuthenticated(req, res, next) {
+  return passport.authenticate(
+    'jwt',
+    { session: false },
+    (err, user) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (user) {
+        req.user = user;
+      }
+
+      return next();
+    },
+  )(req, res, next);
+}
 
 app.use('/users', usersRouter);
 app.use('/', indexRouter);
