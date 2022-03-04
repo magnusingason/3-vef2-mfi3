@@ -84,7 +84,7 @@ app.post(
       const tokenOptions = { expiresIn: tokenLifetime };
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
       user.token = token;
-      res.status(200).json({ token });
+      return res.status(200).json({ token });
 
     }
 
