@@ -198,12 +198,19 @@ usersRouter.post('/register', async function (req, res, next) {
   return res.status(201).json(result);
 });
 
-usersRouter.get('/:id', requireAuthentication, async (req, res) => {
-  const { admin, id } = req.user;
-  if (admin) {
-    const user = await findById(id);
-    return res.status(200).json({ user });
-  }
+usersRouter.get('/me', requireAuthentication, async (req, res) => {
+  const { id } = req.user;
+  const user = await findById(id);
+  return res.status(200).json({ user });
   res.status(401).json({ admin });
 
 });
+
+usersRouter.get('/:id', requireAuthentication, async (req, res) => {
+  const { id } = req.params;
+  const user = await findById(id);
+  return res.status(200).json({ user });
+  res.status(401).json({ admin });
+
+});
+
