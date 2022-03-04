@@ -10,6 +10,7 @@ import {
   updateEvent
 } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
+import { createUser } from '../lib/users.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
