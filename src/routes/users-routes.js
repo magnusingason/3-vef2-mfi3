@@ -207,7 +207,7 @@ usersRouter.post(
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
 
       user.token = token;
-      return res.status(201).json(user);
+      return res.redirect("/users");
 
     }
 
