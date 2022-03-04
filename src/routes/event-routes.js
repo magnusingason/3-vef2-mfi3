@@ -48,6 +48,11 @@ eventsRouter.patch('/:id', requireAuthentication, async (req, res) => {
 
 eventsRouter.delete('/:id', requireAuthentication, async (req, res) => {
     const { id } = req.params;
-    let result = await deleteEventById(id);
-    return result;
+    const admin = req.user;
+    if (admin) {
+        let result = await deleteEventById(id);
+        return result;
+    } else {
+        return admin;
+    }
 })
