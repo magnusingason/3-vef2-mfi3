@@ -125,7 +125,7 @@ export async function updateEventDescription(id, { description } = {}) {
   const q = `
     UPDATE events
       SET
-        description = $1
+        description = $1,
         updated = CURRENT_TIMESTAMP
     WHERE
       id = $2
