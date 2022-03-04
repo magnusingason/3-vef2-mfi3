@@ -174,7 +174,7 @@ export async function deleteRegister({ name, event } = {}) {
 
   return { success: false };
 }
-}
+
 
 export async function listEvents() {
   const q = `
