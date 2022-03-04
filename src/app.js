@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import passport from './lib/login.js';
+import { isInvalid } from './lib/template-helpers.js';
 import { comparePasswords, findById, findByUsername } from './lib/users.js';
 import { indexRouter } from './routes/index-routes.js';
 import { usersRouter } from './routes/users-routes.js';
@@ -60,6 +61,9 @@ passport.use(new Strategy(jwtOptions, strat));
 
 app.use(passport.initialize());
 
+app.locals = {
+  isInvalid,
+};
 
 console.log("ok");
 
