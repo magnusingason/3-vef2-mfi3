@@ -206,7 +206,7 @@ usersRouter.get('/me', requireAuthentication, async (req, res) => {
 });
 
 usersRouter.get('/:id', requireAuthentication, async (req, res) => {
-  const { admin } = req.body;
+  const { admin } = req.user;
   const { id } = req.params;
   console.log(admin);
   if (admin) {
