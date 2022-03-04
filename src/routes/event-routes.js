@@ -57,7 +57,7 @@ eventsRouter.delete('/:id', requireAuthentication, async (req, res) => {
     return res.json(admin);
 })
 
-eventsRouter.post('/:id/register', requireAuthentication, async (req, res) => {
+eventsRouter.post('/register/:id', requireAuthentication, async (req, res) => {
     const idEvent = req.params.id;
     const { id: idUser } = req.user;
     console.log("user: ", idUser)
