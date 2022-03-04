@@ -234,7 +234,7 @@ export async function listEventByName(name) {
 export async function getEventById(id) {
   const q = `
     SELECT
-      id, name, description
+      id, name, slug, description, created, updated
     FROM
       events
     WHERE id = $1
