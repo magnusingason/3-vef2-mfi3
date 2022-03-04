@@ -161,7 +161,7 @@ export function requireAuthentication(req, res, next) {
   )(req, res, next);
 }
 
-app.post('/users/register', function (req, res, next) {
+app.post('/users/register', async function (req, res, next) {
   const { username, name, password = '' } = req.body;
 
   const result = await createUser(username, password, name);
