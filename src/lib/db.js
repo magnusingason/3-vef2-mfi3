@@ -99,6 +99,47 @@ export async function updateEvent(id, { name, slug, description } = {}) {
   return null;
 }
 
+export async function updateEventName(id, { name, slug } = {}) {
+  const q = `
+    UPDATE events
+      SET
+        name = $1,
+        slug = $2,
+        updated = CURRENT_TIMESTAMP
+    WHERE
+      id = $3
+    RETURNING id, name, slug, description;
+  `;
+  const values = [name, slug, id];
+  const result = await query(q, values);
+
+  if (result && result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
+}
+
+export async function updateEventDescription(id, { description } = {}) {
+  const q = `
+    UPDATE events
+      SET
+        description = $1
+        updated = CURRENT_TIMESTAMP
+    WHERE
+      id = $2
+    RETURNING id, name, slug, description;
+  `;
+  const values = [description, id];
+  const result = await query(q, values);
+
+  if (result && result.rowCount === 1) {
+    return result.rows[0];
+  }
+
+  return null;
+}
+
 export async function register({ name, comment, event } = {}) {
   const q = `
     INSERT INTO registrations

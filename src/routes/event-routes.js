@@ -1,6 +1,6 @@
 import express from 'express';
 import { requireAuthentication } from '../app.js';
-import { createEvent, getEventById, listEvents } from '../lib/db.js';
+import { createEvent, getEventById, listEvents, updateEvent, updateEventDescription, updateEventName } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
 
 export const eventsRouter = express.Router();
@@ -22,4 +22,23 @@ eventsRouter.get('/:id', async (req, res) => {
     const { id } = req.params;
     const event = await getEventById(id);
     return res.json({ event });
+})
+
+eventsRouter.patch('/:id', requireAuthentication, async (req, res) => {
+    const { id } = req.params;
+    const admin = req.user;
+    const { name, description } = req.body;
+    const event = getEventById(id);
+    if (admin) {
+        if (!name) {
+            let result = await updateEventDescription(id, { description });
+        } else if (!description) {
+            const slug = slugify(name);
+            let result = await updateEventName(id, { name, slug })
+        } else {
+            let result = await updateEvent(id, { name, slug, description })
+        }
+    }
+    res.json(result);
+
 })
