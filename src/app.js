@@ -6,7 +6,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import passport from './lib/login.js';
 import { isInvalid } from './lib/template-helpers.js';
-import { comparePasswords, findById, findByUsername } from './lib/users.js';
+import { comparePasswords, createUser, findById, findByUsername } from './lib/users.js';
 import { indexRouter } from './routes/index-routes.js';
 import { usersRouter } from './routes/users-routes.js';
 
