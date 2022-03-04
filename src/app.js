@@ -105,6 +105,7 @@ export function addUserIfAuthenticated(req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter)
+app.use('/events', eventsRouter)
 
 
 /** Middleware sem sér um 404 villur. */
