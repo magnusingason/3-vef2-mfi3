@@ -1,7 +1,6 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
-import jwt from 'jsonwebtoken';
-import { jwtOptions, requireAuthentication, tokenLifetime } from '../app.js';
+import { requireAuthentication } from '../app.js';
 import { catchErrors } from '../lib/catch-errors.js';
 import {
   createEvent,
@@ -11,7 +10,6 @@ import {
   updateEvent
 } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
-import { comparePasswords, findByUsername } from '../lib/users.js';
 import {
   registrationValidationMiddleware,
   sanitizationMiddleware,
@@ -188,32 +186,7 @@ usersRouter.post(
 
 
 usersRouter.get('/login', login);
-usersRouter.post(
-  '/login', async (req, res, next) => {
 
-    const { username, password = '' } = req.body;
-
-    const user = await findByUsername(username);
-
-    if (!user) {
-      return res.status(401).json({ error: 'No such user' });
-    }
-
-    const passwordIsCorrect = await comparePasswords(password, user.password);
-
-    if (passwordIsCorrect) {
-      const payload = { id: user.id };
-      const tokenOptions = { expiresIn: tokenLifetime };
-      const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
-
-      user.token = token;
-      req.login(user, next);
-      return res.redirect("/users");
-
-    }
-
-    return res.status(401).json({ error: 'Invalid password' });
-  });
 
 usersRouter.get('/logout', (req, res) => {
   // logout hendir session cookie og session

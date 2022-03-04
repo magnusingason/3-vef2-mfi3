@@ -34,6 +34,7 @@ export const jwtOptions = {
   secretOrKey: jwtSecret,
 }
 
+
 const path = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(join(path, '../public')));
@@ -62,6 +63,32 @@ app.locals = {
   isInvalid,
 };
 
+app.post(
+  '/users/login', async (req, res, next) => {
+
+    const { username, password = '' } = req.body;
+
+    const user = await findByUsername(username);
+
+    if (!user) {
+      return res.status(401).json({ error: 'No such user' });
+    }
+
+    const passwordIsCorrect = await comparePasswords(password, user.password);
+
+    if (passwordIsCorrect) {
+      const payload = { id: user.id };
+      const tokenOptions = { expiresIn: tokenLifetime };
+      const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
+
+      user.token = token;
+      req.login(user, next);
+      return res.redirect("/users");
+
+    }
+
+    return res.status(401).json({ error: 'Invalid password' });
+  });
 
 
 app.use('/users', usersRouter);
