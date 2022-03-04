@@ -81,10 +81,8 @@ app.post(
       const payload = { id: user.id };
       const tokenOptions = { expiresIn: tokenLifetime };
       const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
-
       user.token = token;
-      req.login(user, next);
-      return res.redirect("/users");
+      res.status(200).json({ token });
 
     }
 
@@ -148,7 +146,26 @@ export function requireAuthentication(req, res, next) {
     },
   )(req, res, next);
 }
+/*
+app.post('/users/register', function (req, res, next) {
+  const saltHash = utils.genPassword(req.body.password);
 
+  const salt = saltHash.salt;
+  const hash = saltHash.hash;
+
+  const newUser = new User({
+    username: req.body.username,
+    hash: hash,
+    salt: salt
+  });
+
+  newUser.save()
+    .then((user) => {
+      res.json({ sucess: true, user: user });
+    }).catch(err => next(err));
+
+});
+*/
 
 app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
