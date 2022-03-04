@@ -202,15 +202,17 @@ usersRouter.get('/me', requireAuthentication, async (req, res) => {
   const { id } = req.user;
   const user = await findById(id);
   return res.status(200).json({ user });
-  res.status(401).json({ admin });
 
 });
 
 usersRouter.get('/:id', requireAuthentication, async (req, res) => {
+  const { admin } = req.body;
   const { id } = req.params;
-  const user = await findById(id);
-  return res.status(200).json({ user });
-  res.status(401).json({ admin });
+  if (admin) {
+    const user = await findById(id);
+    return res.status(200).json({ user });
+  }
+  return res.status(401).json({ admin });
 
 });
 
