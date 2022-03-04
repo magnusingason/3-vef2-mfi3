@@ -7,6 +7,7 @@ import {
   listEvent,
   listEventByName,
   listEvents,
+  listUsers,
   updateEvent
 } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
@@ -175,8 +176,16 @@ async function eventRoute(req, res, next) {
 
 
 usersRouter.get('/', requireAuthentication, async (req, res) => {
-  res.status(201).json({ success: true });
+  const { admin } = req.user;
+  if (admin) {
+    const users = await listUsers();
+    return res.status(200).json({ users });
+  }
+  res.status(401).json({ admin });
+
 });
+
+
 usersRouter.post(
   '/',
   requireAuthentication,

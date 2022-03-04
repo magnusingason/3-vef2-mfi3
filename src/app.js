@@ -76,7 +76,7 @@ app.post('/users/login', async (req, res) => {
   const passwordIsCorrect = await comparePasswords(password, user.password);
 
   if (passwordIsCorrect) {
-    const payload = { id: user.id };
+    const payload = { id: user.id, admin: user.admin };
     const tokenOptions = { expiresIn: tokenLifetime };
     const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
     return res.json({ user, token, expiresIn: tokenOptions.expiresIn, });
