@@ -249,6 +249,22 @@ export async function getEventById(id) {
   return null;
 }
 
+export async function deleteEventById(id) {
+  const q = `
+    DELETE FROM
+      events
+    WHERE id = $1
+  `;
+
+  const result = await query(q, [id]);
+
+  if (result) {
+    return { success: true }
+  }
+
+  return { success: false };
+}
+
 export async function listRegistered(event) {
   const q = `
     SELECT
@@ -266,6 +282,8 @@ export async function listRegistered(event) {
 
   return null;
 }
+
+
 
 export async function end() {
   await pool.end();

@@ -1,6 +1,6 @@
 import express from 'express';
 import { requireAuthentication } from '../app.js';
-import { createEvent, getEventById, listEvents, updateEvent, updateEventDescription, updateEventName } from '../lib/db.js';
+import { createEvent, deleteEventById, getEventById, listEvents, updateEvent, updateEventDescription, updateEventName } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
 
 export const eventsRouter = express.Router();
@@ -44,4 +44,10 @@ eventsRouter.patch('/:id', requireAuthentication, async (req, res) => {
         }
     }
 
+})
+
+eventsRouter.delete('/:id', requireAuthentication, async (req, res) => {
+    const { id } = req.params;
+    let result = await deleteEventById(id);
+    return result;
 })
