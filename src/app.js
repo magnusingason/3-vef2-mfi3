@@ -6,7 +6,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import passport from './lib/login.js';
 import { isInvalid } from './lib/template-helpers.js';
-import { comparePasswords, createUser, findById, findByUsername } from './lib/users.js';
+import { comparePasswords, findById, findByUsername } from './lib/users.js';
 import { indexRouter } from './routes/index-routes.js';
 import { usersRouter } from './routes/users-routes.js';
 
@@ -160,15 +160,6 @@ export function requireAuthentication(req, res, next) {
     },
   )(req, res, next);
 }
-
-app.post('/users/register', async function (req, res, next) {
-  const { username, name, password = '' } = req.body;
-
-  const result = await createUser(username, password, name);
-  delete result.password;
-
-  return res.status(201).json(result);
-});
 
 
 app.listen(port, () => {

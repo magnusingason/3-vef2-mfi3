@@ -196,6 +196,16 @@ usersRouter.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
+usersRouter.post('/register', async function (req, res, next) {
+  const { username, name, password = '' } = req.body;
+
+  const result = await createUser(username, password, name);
+  delete result.password;
+
+  return res.status(201).json(result);
+});
+
+
 // Verður að vera seinast svo það taki ekki yfir önnur route
 usersRouter.get('/:slug', requireAuthentication, catchErrors(eventRoute));
 usersRouter.post(
