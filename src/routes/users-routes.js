@@ -200,7 +200,7 @@ usersRouter.get('/logout', (req, res) => {
 usersRouter.post('/register', async function (req, res, next) {
   const { username, name, password = '' } = req.body;
 
-  const result = await createUser(username, password, name);
+  const result = await createUser(username, password, name, false);
   delete result.password;
 
   return res.status(201).json(result);
