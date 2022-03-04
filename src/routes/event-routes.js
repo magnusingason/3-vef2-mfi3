@@ -2,7 +2,7 @@ import express from 'express';
 import { requireAuthentication } from '../app.js';
 import { createEvent, deleteEventById, getEventById, listEvents, register, updateEvent, updateEventDescription, updateEventName } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
-import { findById } from '../lib/users.js';
+import { findnamebyId } from '../lib/users.js';
 
 export const eventsRouter = express.Router();
 
@@ -62,8 +62,7 @@ eventsRouter.post('/:id/register', requireAuthentication, async (req, res) => {
     const id = req.user.id;
     const event = await getEventById(idEvent);
     console.log("adadadaaaaaaaaaaaaaaaaaaadadadadadad", event);
-    const user = findById(id);
-    const name = user.name;
+    const name = await findnamebyId(id);
     console.log(name);
 
     const result = await register({ name, event });

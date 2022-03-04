@@ -44,6 +44,23 @@ export async function findById(id) {
   return null;
 }
 
+export async function findnamebyId(id) {
+  const q = 'SELECT name FROM users WHERE id = $1';
+
+  try {
+    const result = await query(q, [id]);
+
+    if (result.rowCount === 1) {
+      console.log(result);
+      return result.rows[0];
+    }
+  } catch (e) {
+    console.error('Gat ekki fundið notanda eftir id');
+  }
+
+  return null;
+}
+
 export async function createUser(username, password, name, admin) {
   // Geymum hashað password!
   const hashedPassword = await bcrypt.hash(password, 11);
