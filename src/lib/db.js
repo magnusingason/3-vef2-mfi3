@@ -231,6 +231,24 @@ export async function listEventByName(name) {
   return null;
 }
 
+export async function getEventById(id) {
+  const q = `
+    SELECT
+      id, name, slug, description, created, updated
+    FROM
+      events
+    WHERE id = $1
+  `;
+
+  const result = await query(q, [id]);
+
+  if (result) {
+    return result.rows;
+  }
+
+  return null;
+}
+
 export async function getSlugByID(id) {
   const q = `
     SELECT
