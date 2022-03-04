@@ -121,6 +121,7 @@ export async function updateEventName(id, { name, slug } = {}) {
 }
 
 export async function updateEventDescription(id, { description } = {}) {
+  console.log({ description });
   const q = `
     UPDATE events
       SET
