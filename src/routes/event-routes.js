@@ -11,7 +11,7 @@ eventsRouter.get('/', async (req, res) => {
 })
 
 eventsRouter.post('/', requireAuthentication, async (req, res) => {
-    const { name, description = '' } = req.body;
+    const { name, description } = req.body;
     const slug = slugify(name);
     console.log(name);
     const created = await createEvent({ name, slug, description });
