@@ -122,7 +122,7 @@ export async function listEvents() {
   console.log("it got here");
   const q = `
     SELECT
-      id, name, description,
+      id, name, description
     FROM
       events
   `;
