@@ -1,7 +1,6 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
 import { requireAuthentication } from '../app.js';
-import { catchErrors } from '../lib/catch-errors.js';
 import {
   createEvent,
   listEvent,
@@ -11,12 +10,7 @@ import {
   updateEvent
 } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
-import { createUser } from '../lib/users.js';
-import {
-  registrationValidationMiddleware,
-  sanitizationMiddleware,
-  xssSanitizationMiddleware
-} from '../lib/validation.js';
+import { createUser, findById } from '../lib/users.js';
 
 export const usersRouter = express.Router();
 
@@ -186,17 +180,6 @@ usersRouter.get('/', requireAuthentication, async (req, res) => {
 });
 
 
-usersRouter.post(
-  '/',
-  requireAuthentication,
-  registrationValidationMiddleware('description'),
-  xssSanitizationMiddleware('description'),
-  catchErrors(validationCheck),
-  sanitizationMiddleware('description'),
-  catchErrors(registerRoute)
-);
-
-
 usersRouter.get('/login', login);
 
 
@@ -215,15 +198,13 @@ usersRouter.post('/register', async function (req, res, next) {
   return res.status(201).json(result);
 });
 
+usersRouter.get('/:id', requireAuthentication, async (req, res) => {
+  const { admin, id } = req.user;
+  if (admin) {
+    const user = await findById(id);
+    return res.status(200).json({ user });
+  }
+  res.status(401).json({ admin });
 
-// Verður að vera seinast svo það taki ekki yfir önnur route
-usersRouter.get('/:slug', requireAuthentication, catchErrors(eventRoute));
-usersRouter.post(
-  '/:slug',
-  requireAuthentication,
-  registrationValidationMiddleware('description'),
-  xssSanitizationMiddleware('description'),
-  catchErrors(validationCheckUpdate),
-  sanitizationMiddleware('description'),
-  catchErrors(updateRoute)
-);
+});
+});

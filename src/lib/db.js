@@ -138,7 +138,7 @@ export async function listEvents() {
 export async function listUsers() {
   const q = `
     SELECT
-      id, name, username, admin
+      id, name, username, password, admin
     FROM
       users
   `;
