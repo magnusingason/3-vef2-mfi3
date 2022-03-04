@@ -63,7 +63,7 @@ app.use(passport.initialize());
 
 console.log("ok");
 
-app.post('/login', async (req, res) => {
+app.post('/users/login', async (req, res) => {
   const { username, password = '' } = req.body;
 
   const user = await findByUsername(username);
