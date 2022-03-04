@@ -207,4 +207,3 @@ usersRouter.get('/:id', requireAuthentication, async (req, res) => {
   res.status(401).json({ admin });
 
 });
-});
