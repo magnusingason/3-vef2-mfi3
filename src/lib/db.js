@@ -121,7 +121,7 @@ export async function register({ name, comment, event } = {}) {
 export async function listEvents() {
   const q = `
     SELECT
-      id, name, slug, description, created, updated
+      id, name, description,
     FROM
       events
   `;
