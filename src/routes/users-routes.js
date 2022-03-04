@@ -173,7 +173,9 @@ async function eventRoute(req, res, next) {
 
 
 
-usersRouter.get('/', requireAuthentication, catchErrors(index));
+usersRouter.get('/', requireAuthentication, async (req, res) => {
+  res.status(201).json({ success: true });
+});
 usersRouter.post(
   '/',
   requireAuthentication,
