@@ -53,9 +53,10 @@ async function strat(data, next) {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(passport.initialize());
+
 passport.use(new Strategy(jwtOptions, strat));
 
-app.use(passport.initialize());
 
 app.locals = {
   isInvalid,
