@@ -208,6 +208,7 @@ usersRouter.get('/me', requireAuthentication, async (req, res) => {
 usersRouter.get('/:id', requireAuthentication, async (req, res) => {
   const { admin } = req.body;
   const { id } = req.params;
+  console.log(admin);
   if (admin) {
     const user = await findById(id);
     return res.status(200).json({ user });
