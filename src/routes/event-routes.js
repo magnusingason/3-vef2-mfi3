@@ -30,10 +30,10 @@ eventsRouter.patch('/:id', requireAuthentication, async (req, res) => {
     const { name, description } = req.body;
     const event = getEventById(id);
     if (admin) {
-        if (!name) {
+        if (name === undefined) {
             let result = await updateEventDescription(id, { description });
             res.json(result);
-        } else if (!description) {
+        } else if (description === undefined) {
             const slug = slugify(name);
             let result = await updateEventName(id, { name, slug })
             res.json(result);
