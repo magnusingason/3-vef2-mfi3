@@ -61,7 +61,7 @@ eventsRouter.post('/register/:id', requireAuthentication, async (req, res) => {
     const idEvent = req.params.id;
     const { id: idUser } = req.user;
     console.log("user: ", idUser)
-    const name = await findnamebyId(idUser);
+    let name = await findnamebyId(idUser);
     console.log("adwadawdawdawdddddddddddddddddddd", name);
     name = name + " ";
     const array = name.split("'");
