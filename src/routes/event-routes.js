@@ -1,6 +1,6 @@
 import express from 'express';
 import { requireAuthentication } from '../app.js';
-import { createEvent, listEvents } from '../lib/db.js';
+import { createEvent, getEventById, listEvents } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
 
 export const eventsRouter = express.Router();
@@ -16,4 +16,10 @@ eventsRouter.post('/', requireAuthentication, async (req, res) => {
     console.log(name);
     const created = await createEvent({ name, slug, description });
     return res.json({ created });
+})
+
+eventsRouter.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    const event = await getEventById(id);
+    return res.json({ event });
 })

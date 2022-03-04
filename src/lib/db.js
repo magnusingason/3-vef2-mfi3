@@ -189,6 +189,24 @@ export async function listEventByName(name) {
   return null;
 }
 
+export async function getEventById(id) {
+  const q = `
+    SELECT
+      id, name, description
+    FROM
+      events
+    WHERE id = $1
+  `;
+
+  const result = await query(q, [id]);
+
+  if (result) {
+    return result.rows;
+  }
+
+  return null;
+}
+
 export async function listRegistered(event) {
   const q = `
     SELECT
