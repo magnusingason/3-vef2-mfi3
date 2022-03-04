@@ -162,7 +162,7 @@ export async function register({ name, event } = {}) {
 export async function deleteRegister({ name, event } = {}) {
   const q = `
     DELETE FROM registrations
-      WHERE id = $2
+      WHERE event = $2
       AND name = $1;
   `;
   const values = [name, event];
