@@ -141,16 +141,16 @@ export async function updateEventDescription(id, { description } = {}) {
   return null;
 }
 
-export async function register({ name, comment, event } = {}) {
+export async function register({ name, event } = {}) {
   const q = `
     INSERT INTO registrations
-      (name, comment, event)
+      (name, event)
     VALUES
-      ($1, $2, $3)
+      ($1, $2)
     RETURNING
       id, name, comment, event;
   `;
-  const values = [name, comment, event];
+  const values = [name, event];
   const result = await query(q, values);
 
   if (result && result.rowCount === 1) {
