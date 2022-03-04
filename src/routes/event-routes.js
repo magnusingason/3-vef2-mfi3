@@ -1,6 +1,6 @@
 import express from 'express';
 import { requireAuthentication } from '../app.js';
-import { createEvent, deleteEventById, getEventById, listEvents, register, updateEvent, updateEventDescription, updateEventName } from '../lib/db.js';
+import { createEvent, deleteEventById, getEventById, getSlugByID, listEvent, listEvents, register, updateEvent, updateEventDescription, updateEventName } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
 import { findnamebyId } from '../lib/users.js';
 
@@ -60,7 +60,8 @@ eventsRouter.delete('/:id', requireAuthentication, async (req, res) => {
 eventsRouter.post('/:id/register', requireAuthentication, async (req, res) => {
     const { id: idEvent } = req.params.id;
     const id = req.user.id;
-    const event = await getEventById(idEvent);
+    const slug = await getSlugByID(idEvent);
+    const event = await listEvent(slug);
     console.log("adadadaaaaaaaaaaaaaaaaaaadadadadadad", event);
     const name = await findnamebyId(id);
     console.log(name);

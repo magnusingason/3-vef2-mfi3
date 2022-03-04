@@ -231,10 +231,10 @@ export async function listEventByName(name) {
   return null;
 }
 
-export async function getEventById(id) {
+export async function getSlugByID(id) {
   const q = `
     SELECT
-      id, name, slug, description, created, updated
+      slug
     FROM
       events
     WHERE id = $1
