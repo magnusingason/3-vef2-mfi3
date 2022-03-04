@@ -64,6 +64,8 @@ app.locals = {
   isInvalid,
 };
 
+console.log("ok");
+
 app.post(
   '/users/login', async (req, res, next) => {
 
