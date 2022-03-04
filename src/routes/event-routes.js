@@ -13,6 +13,6 @@ eventsRouter.get('/', async (req, res) => {
 eventsRouter.post('/', requireAuthentication, async (req, res) => {
     const { name, description = '' } = req.body;
     const slug = slugify(name);
-    const created = await createEvent(name, slug, description);
+    const created = await createEvent({ name, slug, description });
     return res.json({ created });
 })
