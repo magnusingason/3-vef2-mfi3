@@ -1,5 +1,5 @@
 import express from 'express';
-import { requireAuthentication } from '../app';
+import { requireAuthentication } from '../app.js';
 import { createEvent, listEvents } from '../lib/db.js';
 import { slugify } from '../lib/slugify.js';
 
