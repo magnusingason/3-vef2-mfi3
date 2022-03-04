@@ -51,7 +51,7 @@ eventsRouter.delete('/:id', requireAuthentication, async (req, res) => {
     const admin = req.user;
     if (admin) {
         let result = await deleteEventById(id);
-        return result;
+        return res.json(result);
     }
-    return admin;
+    return res.json(admin);
 })
