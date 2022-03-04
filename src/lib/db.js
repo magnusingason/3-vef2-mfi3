@@ -159,6 +159,22 @@ export async function register({ name, event } = {}) {
 
   return null;
 }
+export async function deleteRegister({ name, event } = {}) {
+  const q = `
+    DELETE FROM registrations
+      WHERE id = $2
+      AND name = $1;
+  `;
+  const values = [name, event];
+  const result = await query(q, values);
+
+  if (result) {
+    return { success: true }
+  }
+
+  return { success: false };
+}
+}
 
 export async function listEvents() {
   const q = `

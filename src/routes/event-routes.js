@@ -60,14 +60,17 @@ eventsRouter.delete('/:id', requireAuthentication, async (req, res) => {
 eventsRouter.post('/register/:id', requireAuthentication, async (req, res) => {
     const idEvent = req.params.id;
     const { id: idUser } = req.user;
-    console.log("user: ", idUser)
     let name = await findnamebyId(idUser);
-    console.log("adwadawdawdawdddddddddddddddddddd", name);
     const realname = name.name
-    console.log(realname);
     const result = await register({ name: realname, event: idEvent });
     return res.json(result);
+})
 
-
-
+eventsRouter.delete('/register/:id', requireAuthentication, async (req, res) => {
+    const idEvent = req.params.id;
+    const { id: idUser } = req.user;
+    let name = await findnamebyId(idUser);
+    const realname = name.name
+    const result = await deleteRegister({ name: realname, event: idEvent });
+    return res.json(result);
 })
