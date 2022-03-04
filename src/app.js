@@ -16,7 +16,7 @@ dotenv.config();
 export const {
   PORT: port = 3005,
   JWT_SECRET: jwtSecret,
-  TOKEN_LIFETIME: tokenLifetime = 200,
+  TOKEN_LIFETIME: tokenLifetime = 900,
   DATABASE_URL: connectionString,
 } = process.env;
 
