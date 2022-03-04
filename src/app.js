@@ -30,7 +30,7 @@ const app = express();
 app.use(express.json());
 
 export const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT'),
+  jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt'),
   secretOrKey: jwtSecret,
 }
 
