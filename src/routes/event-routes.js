@@ -64,6 +64,7 @@ eventsRouter.post('/:id/register', requireAuthentication, async (req, res) => {
     const event = await getEventById(idEvent);
     const user = findById(id);
     const name = user.name;
+    console.log(name);
 
     const result = await register({ name, event });
     return res.json(result);
