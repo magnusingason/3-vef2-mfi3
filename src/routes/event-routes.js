@@ -32,13 +32,16 @@ eventsRouter.patch('/:id', requireAuthentication, async (req, res) => {
     if (admin) {
         if (!name) {
             let result = await updateEventDescription(id, { description });
+            res.json(result);
         } else if (!description) {
             const slug = slugify(name);
             let result = await updateEventName(id, { name, slug })
+            res.json(result);
         } else {
-            let result = await updateEvent(id, { name, slug, description })
+            const slug = slugify(name);
+            let result = await updateEvent(id, { name, slug, description });
+            res.json(result);
         }
     }
-    res.json(result);
 
 })
