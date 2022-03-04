@@ -61,6 +61,8 @@ eventsRouter.post('/:id/register', requireAuthentication, async (req, res) => {
     const { id: idEvent } = req.params.id;
     const id = req.user.id;
     const slug = await getSlugByID(idEvent);
+    console.log(idEvent);
+    console.log(slug);
     const event = await listEvent(slug);
     console.log("adadadaaaaaaaaaaaaaaaaaaadadadadadad", event);
     const name = await findnamebyId(id);
