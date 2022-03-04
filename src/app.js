@@ -98,7 +98,7 @@ function errorHandler(err, req, res, next) { // eslint-disable-line
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-function requireAuthentication(req, res, next) {
+export function requireAuthentication(req, res, next) {
   return passport.authenticate(
     'jwt',
     { session: false },
