@@ -6,7 +6,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import passport from './lib/login.js';
-import { isInvalid } from './lib/template-helpers.js';
 import { comparePasswords, findById, findByUsername } from './lib/users.js';
 import { indexRouter } from './routes/index-routes.js';
 import { usersRouter } from './routes/users-routes.js';
@@ -43,6 +42,7 @@ app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
 
 async function strat(data, next) {
+  // fáum id gegnum data sem geymt er í token
   const user = await findById(data.id);
 
   if (user) {
@@ -55,41 +55,34 @@ async function strat(data, next) {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(passport.initialize());
 
 passport.use(new Strategy(jwtOptions, strat));
 
+app.use(passport.initialize());
 
-app.locals = {
-  isInvalid,
-};
 
 console.log("ok");
 
-app.post(
-  '/users/login', async (req, res, next) => {
+app.post('/login', async (req, res) => {
+  const { username, password = '' } = req.body;
 
-    const { username, password = '' } = req.body;
+  const user = await findByUsername(username);
 
-    const user = await findByUsername(username);
+  if (!user) {
+    return res.status(401).json({ error: 'No such user' });
+  }
 
-    if (!user) {
-      return res.status(401).json({ error: 'No such user' });
-    }
+  const passwordIsCorrect = await comparePasswords(password, user.password);
 
-    const passwordIsCorrect = await comparePasswords(password, user.password);
+  if (passwordIsCorrect) {
+    const payload = { id: user.id };
+    const tokenOptions = { expiresIn: tokenLifetime };
+    const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
+    return res.json({ token });
+  }
 
-    if (passwordIsCorrect) {
-      const payload = { id: user.id };
-      const tokenOptions = { expiresIn: tokenLifetime };
-      const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
-      user.token = token;
-      return res.status(200).json({ token });
-
-    }
-
-    return res.status(401).json({ error: 'Invalid password' });
-  });
+  return res.status(401).json({ error: 'Invalid password' });
+});
 
 
 app.use('/users', usersRouter);
